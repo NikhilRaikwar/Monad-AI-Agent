@@ -6,7 +6,9 @@ import { ethers } from "ethers";
 import { DynamicTool } from "@langchain/core/tools";
 import * as dotenv from "dotenv";
 import * as fs from "fs";
-dotenv.config({ path: "../.env" });
+// Load environment variables
+dotenv.config({ path: "../.env" }); // Adjust path to root
+// Validate environment variables
 function validateEnvironment() {
     const missingVars = [];
     const requiredVars = ["OPENAI_API_KEY", "MONAD_PRIVATE_KEY"];
@@ -21,6 +23,7 @@ function validateEnvironment() {
 }
 validateEnvironment();
 const WALLET_DATA_FILE = "./monad_wallet_data.txt";
+// Custom tools for Monad Testnet
 const monadTools = [
     new DynamicTool({
         name: "getWalletDetails",
@@ -60,6 +63,7 @@ const monadTools = [
         },
     }),
 ];
+// Initialize the agent
 async function initializeAgent() {
     const llm = new ChatOpenAI({
         model: "gpt-4o-mini",
@@ -74,6 +78,7 @@ async function initializeAgent() {
     fs.writeFileSync(WALLET_DATA_FILE, JSON.stringify(walletData));
     return { agent, config: { configurable: { thread_id: "Monad Testnet Agent" } } };
 }
+// Export the agent processing function
 export async function processMessage(message) {
     const { agent, config } = await initializeAgent();
     const stream = await agent.stream({ messages: [new HumanMessage(message)] }, config);
@@ -87,5 +92,10 @@ export async function processMessage(message) {
         }
     }
     return response;
+}
+// For standalone execution (optional)
+if (import.meta.url === `file://${process.argv[1]}`) {
+    console.log("Starting Monad Testnet Agent...");
+    processMessage("Show me my wallet details").then(console.log).catch(console.error);
 }
 //# sourceMappingURL=monad-agent.js.map

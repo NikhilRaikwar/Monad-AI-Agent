@@ -1,6 +1,6 @@
 import express from "express";
 import cors from "cors";
-import { processMessage } from "./monad-agent.js";
+import { processMessage } from "./monad-agent.js"; // Added .js extension
 const app = express();
 const PORT = 3001;
 app.use(cors());
