@@ -86,6 +86,6 @@ export async function processMessage(message) {
             response += chunk.tools.messages[0].content;
         }
     }
-    return response;
+    return response || "No response generated"; // Ensure a response is always returned
 }
 //# sourceMappingURL=monad-agent.js.map

@@ -6,6 +6,8 @@ interface Message {
   sender: "user" | "agent";
 }
 
+const BACKEND_URL = "https://humble-space-winner-p9qpx7v666wfvrx-3001.app.github.dev/api/chat";
+
 const Chat: React.FC = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
@@ -20,14 +22,13 @@ const Chat: React.FC = () => {
     setInput("");
 
     try {
-      const response = await axios.post("http://localhost:3001/api/chat", {
+      const response = await axios.post(BACKEND_URL, {
         message: input,
       });
-      console.log("Backend response:", response.data); // Log the response
       const agentMessage: Message = { text: response.data.response, sender: "agent" };
       setMessages(prev => [...prev, agentMessage]);
     } catch (error) {
-      console.error("Error details:", error); // Log detailed error
+      console.error("Error sending message:", error);
       const errorMessage: Message = {
         text: `Error: Could not get a response - ${error instanceof Error ? error.message : "Unknown error"}`,
         sender: "agent",

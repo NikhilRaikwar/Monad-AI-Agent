@@ -102,5 +102,5 @@ export async function processMessage(message: string): Promise<string> {
     }
   }
 
-  return response;
+  return response || "No response generated"; // Ensure a response is always returned
 }
