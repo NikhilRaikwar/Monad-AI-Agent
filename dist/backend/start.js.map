@@ -1,0 +1,1 @@
+{"version":3,"file":"start.js","sourceRoot":"","sources":["../../backend/start.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,cAAc,EAAE,MAAM,YAAY,CAAC;AAE5C,yCAAyC;AACzC,IAAI,CAAC,UAAU,CAAC,cAAc,EAAE,CAAC;IAC9B,UAAkB,CAAC,cAAc,GAAG,cAAc,CAAC;AACtD,CAAC;AAED,8BAA8B;AAC9B,OAAO,aAAa,CAAC"}

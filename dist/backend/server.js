@@ -1,10 +1,19 @@
 import express from "express";
 import cors from "cors";
-import { processMessage } from "./monad-agent.js"; // Added .js extension
+import { processMessage } from "./monad-agent.js";
 const app = express();
 const PORT = 3001;
-app.use(cors());
+// Allow requests from the frontend origin
+app.use(cors({
+    origin: "https://humble-space-winner-p9qpx7v666wfvrx-3000.app.github.dev",
+    methods: ["POST"], // Explicitly allow POST requests
+    allowedHeaders: ["Content-Type"],
+}));
 app.use(express.json());
+// Optional: Add a root route for clarity
+app.get("/", (req, res) => {
+    res.send("Monad AI Agent Backend - Use POST /api/chat to interact");
+});
 app.post("/api/chat", async (req, res) => {
     try {
         const { message } = req.body;

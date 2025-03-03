@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import axios from "axios";
+const BACKEND_URL = "https://humble-space-winner-p9qpx7v666wfvrx-3001.app.github.dev/api/chat";
 const Chat = () => {
     const [messages, setMessages] = useState([]);
     const [input, setInput] = useState("");
@@ -12,15 +13,14 @@ const Chat = () => {
         setMessages(prev => [...prev, userMessage]);
         setInput("");
         try {
-            const response = await axios.post("http://localhost:3001/api/chat", {
+            const response = await axios.post(BACKEND_URL, {
                 message: input,
             });
-            console.log("Backend response:", response.data); // Log the response
             const agentMessage = { text: response.data.response, sender: "agent" };
             setMessages(prev => [...prev, agentMessage]);
         }
         catch (error) {
-            console.error("Error details:", error); // Log detailed error
+            console.error("Error sending message:", error);
             const errorMessage = {
                 text: `Error: Could not get a response - ${error instanceof Error ? error.message : "Unknown error"}`,
                 sender: "agent",

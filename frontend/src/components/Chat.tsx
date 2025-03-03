@@ -6,12 +6,26 @@ interface Message {
   sender: "user" | "agent";
 }
 
-const BACKEND_URL = "https://humble-space-winner-p9qpx7v666wfvrx-3001.app.github.dev/api/chat";
+const BACKEND_URL = "https://upgraded-acorn-7w4pg7qxjq4fx79-3001.app.github.dev/api/chat";
+const HEALTH_CHECK_URL = "https://upgraded-acorn-7w4pg7qxjq4fx79-3001.app.github.dev/health";
 
 const Chat: React.FC = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const chatEndRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const checkBackendHealth = async () => {
+      try {
+        const response = await axios.get(HEALTH_CHECK_URL);
+        setMessages(prev => [...prev, { text: `Backend status: ${response.data.status}`, sender: "agent" }]);
+      } catch (error) {
+        console.error("Health check failed:", error);
+        setMessages(prev => [...prev, { text: "Error: Backend not reachable", sender: "agent" }]);
+      }
+    };
+    checkBackendHealth();
+  }, []);
 
   const sendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -22,15 +36,16 @@ const Chat: React.FC = () => {
     setInput("");
 
     try {
-      const response = await axios.post(BACKEND_URL, {
-        message: input,
-      });
+      const response = await axios.post(BACKEND_URL, { message: input });
       const agentMessage: Message = { text: response.data.response, sender: "agent" };
       setMessages(prev => [...prev, agentMessage]);
     } catch (error) {
       console.error("Error sending message:", error);
+      const errorText = axios.isAxiosError(error) && error.response
+        ? `Server error: ${error.response.status} - ${JSON.stringify(error.response.data)}`
+        : error instanceof Error ? error.message : "Unknown error";
       const errorMessage: Message = {
-        text: `Error: Could not get a response - ${error instanceof Error ? error.message : "Unknown error"}`,
+        text: `Error: Could not get a response - ${errorText}`,
         sender: "agent",
       };
       setMessages(prev => [...prev, errorMessage]);
