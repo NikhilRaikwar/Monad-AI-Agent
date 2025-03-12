@@ -11,6 +11,7 @@ import bodyParser from "body-parser";
 import axios from "axios";
 import * as cheerio from "cheerio";
 import { Logger } from "tslog";
+import cors from 'cors';
 
 dotenv.config();
 
@@ -748,10 +749,9 @@ const workflow = new StateGraph<AgentState>({
 
 const agent = workflow.compile();
 
-// Express server
 const app = express();
-app.use(bodyParser.json());
 
+// Define agentHandler before using it
 const agentHandler: RequestHandler = async (req: Request, res: Response): Promise<void> => {
   const { input, privateKey } = req.body as { input?: string; privateKey?: string };
   if (!input) {
@@ -775,7 +775,13 @@ const agentHandler: RequestHandler = async (req: Request, res: Response): Promis
   }
 };
 
-app.post("/agent", agentHandler);
+// Setup Express with CORS and routes
+app.use(cors({ origin: 'https://aelix-ai.vercel.app' })); // Add CORS
+app.use(bodyParser.json());
+app.get('/', (req: Request, res: Response) => {
+  res.json({ message: "Welcome to Monad AI Agent! Use POST /agent to interact with the agent." });
+});
+app.post('/agent', agentHandler); // Use agentHandler after declaration
 
 const PORT = 3000;
 app.listen(PORT, () => {
