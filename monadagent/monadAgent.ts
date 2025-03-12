@@ -784,6 +784,6 @@ app.get('/', (req: Request, res: Response) => {
 app.post('/agent', agentHandler); // Use agentHandler after declaration
 
 const PORT = 3000;
-app.listen(PORT, () => {
+app.listen(PORT, () => {     
   log.info(`Server running on http://localhost:${PORT}`);
 });
