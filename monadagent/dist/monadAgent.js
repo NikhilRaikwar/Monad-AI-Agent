@@ -49,6 +49,7 @@ const body_parser_1 = __importDefault(require("body-parser"));
 const axios_1 = __importDefault(require("axios"));
 const cheerio = __importStar(require("cheerio"));
 const tslog_1 = require("tslog");
+const cors_1 = __importDefault(require("cors"));
 dotenv.config();
 // Environment variables
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY || "";
@@ -750,9 +751,8 @@ const workflow = new langgraph_1.StateGraph({
     .addEdge("tools", "agent")
     .addConditionalEdges("agent", shouldContinue);
 const agent = workflow.compile();
-// Express server
 const app = (0, express_1.default)();
-app.use(body_parser_1.default.json());
+// Define agentHandler before using it
 const agentHandler = async (req, res) => {
     const { input, privateKey } = req.body;
     if (!input) {
@@ -774,7 +774,13 @@ const agentHandler = async (req, res) => {
         res.status(500).json({ error: `Internal server error: ${error instanceof Error ? error.message : String(error)}` });
     }
 };
-app.post("/agent", agentHandler);
+// Setup Express with CORS and routes
+app.use((0, cors_1.default)({ origin: 'https://aelix-ai.vercel.app' })); // Add CORS
+app.use(body_parser_1.default.json());
+app.get('/', (req, res) => {
+    res.json({ message: "Welcome to Monad AI Agent! Use POST /agent to interact with the agent." });
+});
+app.post('/agent', agentHandler); // Use agentHandler after declaration
 const PORT = 3000;
 app.listen(PORT, () => {
     log.info(`Server running on http://localhost:${PORT}`);
