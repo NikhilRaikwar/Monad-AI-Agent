@@ -606,14 +606,25 @@ const agentHandler: RequestHandler = async (req: Request, res: Response): Promis
 };
 
 // Setup Express with CORS and routes
-app.use(cors({ origin: "https://aelix.xyz" }));
+app.use(cors({
+  origin: (origin, callback) => {
+    const allowedOrigins = ["https://aelix.xyz", "https://www.aelix.xyz"];
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+  methods: ["GET", "POST", "OPTIONS"],
+  allowedHeaders: ["Content-Type"],
+}));
 app.use(bodyParser.json());
 app.get("/", (req: Request, res: Response) => {
   res.json({ message: "Welcome to Monad AI Agent! Use POST /agent to interact with the agent." });
 });
 app.post("/agent", agentHandler);
 
-const PORT = 3000;
+const PORT = process.env.PORT || 3000; // Use Render's PORT if available, fallback to 3000
 app.listen(PORT, () => {
   log.info(`Server running on http://localhost:${PORT}`);
 });
