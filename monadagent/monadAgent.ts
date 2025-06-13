@@ -830,8 +830,7 @@ app.use(cors({
   origin: (origin, callback) => {
     // Allow requests from your frontend domains
     const allowedOrigins = [
-      "https://aelix.xyz", 
-      "https://www.aelix.xyz",
+      "https://nexis-mocha.vercel.app/",
       "http://localhost:3000",
       "http://localhost:3001",
       "http://localhost:5173", // Vite default
