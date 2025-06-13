@@ -1,14 +1,16 @@
 {
   "compilerOptions": {
-    "target": "ESNext",              // Latest JS features ke liye
-    "module": "commonjs",            // Node.js compatibility
-    "strict": true,                  // Type safety
-    "esModuleInterop": true,         // Interop for CommonJS modules
-    "skipLibCheck": true,            // Faster compilation
-    "outDir": "./dist",              // Output folder
-    "rootDir": "./",                 // Root directory
-    "resolveJsonModule": true        // JSON import support
+    "target": "ESNext",
+    "module": "CommonJS",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "outDir": "./dist",
+    "rootDir": "./",
+    "resolveJsonModule": true,
+    "forceConsistentCasingInFileNames": true,
+    "types": ["node", "express-session"]
   },
-  "include": ["**/*.ts"],            // Recursive .ts files include
-  "exclude": ["node_modules", "dist"] // Exclude dist to avoid re-compilation
+  "include": ["**/*.ts"],
+  "exclude": ["node_modules", "dist"]
 }
